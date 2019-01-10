@@ -27,7 +27,7 @@ class Frame(tkinter.ttk.Frame):
         Verwijder de invoer van zoekveld. \n 
         Returns het kenteken. '''
         text = self.buttonEntry.get()
-        self.buttonEntry.delete(0)
+        self.buttonEntry.delete(0, "end")
         return text
 
     def createButtonEntry(self, entrytext, buttontext, function):
@@ -54,7 +54,6 @@ class Frame(tkinter.ttk.Frame):
         register = {}
         for entry in self.entries:
             register[entry] = self.entries[entry].get()
-        self.clearEntries()
         return register
 
     def createClearEntries(self, buttontext):
@@ -100,4 +99,3 @@ class Frame(tkinter.ttk.Frame):
 class Grid(tkinter.ttk.Frame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
-        

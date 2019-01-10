@@ -3,8 +3,9 @@ import tkinter.ttk
 import datetime
 import time
 
-from connector import connector
+# from connector import connector
 from tkinterplus import Frame
+
 
 class Application(tkinter.Tk):
     def __init__(self):
@@ -14,6 +15,9 @@ class Application(tkinter.Tk):
 
 
 class Tabbladen(tkinter.ttk.Notebook):
+    def createTab(self, frameclass, text):
+        self.add(frameclass(self), text=text)
+
     def __init__(self, master):
         super().__init__(master)
         self.pack(fill='both', expand=True)
@@ -24,8 +28,6 @@ class Tabbladen(tkinter.ttk.Notebook):
         self.createTab(ParkingPlaceStatus, "Parkeerplaats")
         self.createTab(Invoices, "Betalen")
 
-    def createTab(self, frameclass, text):
-        self.add(frameclass(self), text=text)
 
 class ParkingPlaceStatus(Frame):
     def __init__(self, master):
@@ -55,7 +57,6 @@ class CarStatus(Frame):
         self.list.delete(*self.list.get_children())
         for values in data:
             self.list.insert("", "end", text=values[:1], values=values[1:])
-
 
     def verwerkingAutoStatus(self, opdracht):
         ''' TODO Verbinding maken met de database. '''
@@ -133,12 +134,17 @@ class Registration(Frame):
         self.createEntry("Automerk + type", "Brand")
         self.createEntry("Brandstof", "Fuel")
         self.createButton("Registreren", self.registreren)
+        self.createLabel("Registratie")
         # self.createClearEntries("Leegmaken")
+
+    def displayRegistratie(self, code):
+        self.labels["Registratie"].config(text=code)
 
     def registreren(self):
         ''' Registratie '''
         data = self.getEntries()
-        print("Geregistreerd: %s" % data)
+        # code = connector.register(data)
+        self.displayRegistratie(data)
 
 
 def main():

@@ -6,8 +6,8 @@ class Connector():
         'Connect to the database'
         self.connection = connection = mysql.connector.connect(
             host="localhost",
-            user="hanze",
-            passwd="",
+            user="root",
+            passwd="Hanze",
             database="hanze"
         )
         self.cursor = connection.cursor()
@@ -16,7 +16,7 @@ class Connector():
 
     def get(self, operation):
         self.cursor.execute(operation)
-        return self.cursor
+        return self.cursor.fetchall()
 
 
     def execute(self, operation):
@@ -27,9 +27,18 @@ class Connector():
 
     def __del__(self):
         """ Closes the connection to the database """
-        # self.cursor.close() # Werkt niet met global
-        self.connection.close()
+        try:
+            # self.cursor.close() # Werkt niet als global
+            self.connection.close()
+        except:
+            pass
         print("Disconnected")
 
 
 connector = Connector()
+
+if __name__ == "__main__":
+    def main():
+        # connector.create()
+        pass
+    main()
