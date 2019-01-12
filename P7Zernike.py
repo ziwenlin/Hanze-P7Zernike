@@ -5,6 +5,9 @@ import time
 
 # from connector import connector
 from tkinterplus import Frame
+import settings
+brands = settings.brands
+fueltype = settings.fueltype
 
 
 class Application(tkinter.Tk):
@@ -127,15 +130,19 @@ class Registration(Frame):
     def __init__(self, master):
         super().__init__(master)
         self.createEntry("Kenteken", "License")
-        self.createEntry("Naam", "Name")
+        self.createEntry("Voornaam", "Firstname")
+        self.createEntry("Tussenvoegsel", "Prefix")
+        self.createEntry("Achternaam", "Lastname")
         self.createEntry("Telefoonnummer", "Phone")
         self.createEntry("E-mail", "Mail")
         self.createEntry("Student-/personeelcode", "Code")
-        self.createEntry("Automerk + type", "Brand")
-        self.createEntry("Brandstof", "Fuel")
+        self.createEntryChoice("Rol",["Student","Werknemer"], "Role")
+        self.createEntryChoice("Automerk", brands, "Brand", "Volkswagen")
+        self.createEntry("Automodel", "Model")
+        self.createEntryChoice("Brandstof", fueltype, "Fuel", "Benzine")
         self.createButton("Registreren", self.registreren)
         self.createLabel("Registratie")
-        # self.createClearEntries("Leegmaken")
+        self.createClearEntries("Leegmaken")
 
     def displayRegistratie(self, code):
         self.labels["Registratie"].config(text=code)
