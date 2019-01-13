@@ -1,132 +1,112 @@
-import tkinter
-import tkinter.ttk
 import datetime
 import time
 
 # from connector import connector
-from tkinterplus import Frame
+import tkinterplus
 import settings
 brands = settings.brands
 fueltype = settings.fueltype
 
 
-class Application(tkinter.Tk):
-    def __init__(self):
-        super().__init__()
-        self.title("P7@Zernike")
-        self.menu = Tabbladen(self)
-
-
-class Tabbladen(tkinter.ttk.Notebook):
-    def createTab(self, frameclass, text):
-        self.add(frameclass(self), text=text)
-
+class P7Entrance(tkinterplus.Notebook):
     def __init__(self, master):
         super().__init__(master)
-        self.pack(fill='both', expand=True)
-        self.createTab(CarStatus, "Parkeerstatus")
-        self.createTab(CheckIn, "Inchecken")
-        self.createTab(CheckOut, "Uitchecken")
-        self.createTab(Registration, "Registreren")
-        self.createTab(ParkingPlaceStatus, "Parkeerplaats")
-        self.createTab(Invoices, "Betalen")
+        self.createTab(ParkStatus, "Parkeerplaatsen")
+        self.createTab(ParkCheckIn, "Ingang A")
+        self.createTab(ParkCheckIn, "Ingang B")
+        self.createTab(ParkCheckOut, "Uitgang A")
+        self.createTab(ParkCheckOut, "Uitgang B")
 
 
-class ParkingPlaceStatus(Frame):
+class P7Zernike(tkinterplus.Notebook):
     def __init__(self, master):
         super().__init__(master)
-        self.createLabel("ParkeerAantal")
+        user = "Gebruiker"
+        visor = "Beheerder"
+        self.createTab(SignIn, "Aanmelden")
+        self.createTab(SignUp, "Registreren")
+        self.createTab(UserCarStatus, "Status", user)
+        self.createTab(UserInvoices, "Betalen", user)
+        self.createTab(ParkStatus, "Parkeerplaatsen", user)
+        self.createTab(SignOut, "Afmelden", user)
+        self.createTab(ParkStatus, "Parkeerplaats", visor)
+        self.createTab(ParkCheckIn, "Inchecken", visor)
+        self.createTab(ParkCheckOut, "Uitchecken", visor)
+        self.createTab(VisorParkedCarsList, "Lijst parkeerplaats", visor)
+        self.createTab(VisorParkedCarsHistory, "Geschiedenis parkeerplaats", visor)
+        self.createTab(VisorParkedCarsOverview, "Overzicht parkeerplaats", visor)
+        self.createTab(VisorUsersInvoices, "Alle facturen", visor)
+        self.createTab(VisorUnpaidInvoices, "Onbetaalde facturen", visor)
+        self.createTab(VisorParkPrices, "Prijzen", visor)
+        self.createTab(SignOut, "Afmelden", visor)
 
 
-class CarStatus(Frame):
+class P7Super(tkinterplus.Notebook):
     def __init__(self, master):
         super().__init__(master)
-        self.createButtonEntry("Zoeken op kenteken", "Zoeken", self.zoeken)
-        self.createLabel("AutoStatus")
-        self.createList(("Datum", "Tijd", "Prijs", "Betaald"))
-
-    def displayAutoStatus(self, text):
-        ''' Weergeeft de status van het parkeren in de informatiepaneel. '''
-        if text is not None:
-            text = "Uw huidige parkeertijd is %s uur." % text
-        else:
-            text = "De auto is niet geparkeerd."
-        self.labels["AutoStatus"].config(text=text)
-
-    def displayAutoGeschiedenis(self, data):
-        ''' Voegt de data toe in de tabel. \n
-        Data moet een 'list' of 'tuple' zijn. '''
-        # Verwijder alle data in de tabel
-        self.list.delete(*self.list.get_children())
-        for values in data:
-            self.list.insert("", "end", text=values[:1], values=values[1:])
-
-    def verwerkingAutoStatus(self, opdracht):
-        ''' TODO Verbinding maken met de database. '''
-        random = time.time() * 100 % 10
-        if random < 9:
-            if random < 1:
-                return datetime.time(hour=0, minute=int(60*random))
-            return datetime.time(hour=int(random), minute=int(6*random))
-        return None
-
-    def zoeken(self):
-        """ Functie van de knop. \n
-        Invoerveld uitlezen en daarmee in de database kijken. 
-        Data van de database wordt gelezen en verwerkt. 
-        De geschiedenis wordt in de tabel weergeven en
-        de eventuele huidige parkeersessie wordt 
-        in de informatiepaneel weergeven. """
-        kenteken = self.getButtonEntry()
-        status = self.verwerkingAutoStatus(kenteken)
-        self.displayAutoStatus(status)
-        geschiedenis = [
-            (1000, 10, 3242, 3),
-            (1000, 93, 2380, 3),
-            (1902, 193, 392, 3),
-            (21, 31, 3243, 324),
-            (21, 312, 932, 324),
-        ]
-        self.displayAutoGeschiedenis(geschiedenis)
+        self.createTab(ParkStatus, "Parkeerplaats")
+        self.createTab(ParkCheckIn, "Inchecken")
+        self.createTab(ParkCheckOut, "Uitchecken")
+        self.createTab(VisorParkedCarsList, "Lijst parkeerplaats")
+        self.createTab(VisorParkedCarsHistory, "Geschiedenis parkeerplaats")
+        self.createTab(VisorParkedCarsOverview, "Overzicht parkeerplaats")
+        self.createTab(VisorUsersInvoices, "Alle facturen")
+        self.createTab(VisorUnpaidInvoices, "Onbetaalde facturen")
+        self.createTab(VisorParkPrices, "Prijzen")
 
 
-class CheckOut(Frame):
+
+class ParkCheckOut(tkinterplus.Frame):
     def __init__(self, master):
         super().__init__(master)
-        self.createButtonEntry("Kenteken", "Uitchecken", self.uitchecken)
+        self.createButtonEntry("Kenteken", "Uitrijden", self.uitchecken)
 
     def uitchecken(self):
         ''' Invoerveld uitlezen. \n 
         Returns het kenteken. '''
         text = self.getButtonEntry()
-        print("Zoeken naar '%s'" % text)
+        self.after(100, print, "Kenteken uit de database ophalen...")
+        self.after(1600, print, "Kenteken gegevens afmelden...")
+        self.after(2000, print, "Slagboom openen...")
+        return text
 
 
-class CheckIn(Frame):
+class ParkCheckIn(tkinterplus.Frame):
     def __init__(self, master):
         super().__init__(master)
-        self.createButtonEntry("Kenteken", "Inchecken", self.inchecken)
+        self.createButtonEntry("Kenteken", "Inrijden", self.inchecken)
 
     def inchecken(self):
         ''' Uitvoerveld uitlezen. \n 
         Returns het kenteken. '''
         text = self.getButtonEntry()
-        print("Zoeken naar '%s'" % text)
+        self.after(100, print, "Kenteken uit de database ophalen...")
+        self.after(1600, print, "Kenteken gegevens goedkeuren...")
+        self.after(2000, print, "Slagboom openen...")
+        return text
 
 
-class Invoices(Frame):
+class SignOut(tkinterplus.Frame):
+    def uitloggen(self):
+        self.master.switchGroup(None)
+
     def __init__(self, master):
         super().__init__(master)
-        self.createButtonEntry("Zoeken op kenteken", "Zoeken", self.zoeken)
+        self.createButton("Uitloggen", self.uitloggen)
 
-    def zoeken(self):
-        ''' Invoerveld uitlezen. \n 
-        Returns het kenteken. '''
-        text = self.getButtonEntry()
-        print("Zoeken naar '%s'" % text)
+class SignIn(tkinterplus.Frame):
+    def inloggen(self):
+        kenteken = self.getButtonEntry()
+        if kenteken == "super":
+            self.master.switchGroup("Beheerder")
+            return
+        self.master.switchGroup("Gebruiker")
 
+    def __init__(self, master):
+        super().__init__(master)
+        self.createButtonEntry("Kenteken", "Inloggen", self.inloggen)
 
-class Registration(Frame):
+class SignUp(tkinterplus.Frame):
     def __init__(self, master):
         super().__init__(master)
         self.createEntry("Kenteken", "License")
@@ -136,13 +116,13 @@ class Registration(Frame):
         self.createEntry("Telefoonnummer", "Phone")
         self.createEntry("E-mail", "Mail")
         self.createEntry("Student-/personeelcode", "Code")
-        self.createEntryChoice("Rol",["Student","Werknemer"], "Role")
+        self.createEntryChoice("Rol", ["Student", "Werknemer"], "Role")
         self.createEntryChoice("Automerk", brands, "Brand", "Volkswagen")
         self.createEntry("Automodel", "Model")
         self.createEntryChoice("Brandstof", fueltype, "Fuel", "Benzine")
         self.createButton("Registreren", self.registreren)
         self.createLabel("Registratie")
-        self.createClearEntries("Leegmaken")
+        self.createEntryClear("Leegmaken")
 
     def displayRegistratie(self, code):
         self.labels["Registratie"].config(text=code)
@@ -154,8 +134,188 @@ class Registration(Frame):
         self.displayRegistratie(data)
 
 
+class ParkStatus(tkinterplus.Frame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.createLabel("ParkeerStatus")
+        self.createLabel("ParkeerAantal")
+        self.createButton("Bijwerken", self.updaten)
+        self.updaten()
+    
+    def updaten(self):
+        self.labels["ParkeerStatus"].config(text="Parkeerplaats is open.")
+        self.labels["ParkeerAantal"].config(text="Er zijn nog 53 parkeerplekken over.")
+
+
+class VisorParkedCarsList(tkinterplus.Frame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.createButton("Bijwerken", self.updaten)
+        self.createTable(("Kenteken", "Merk", "Model", "Brandstof", "Tijd"))
+
+    def updaten(self):
+        """ Functie van de knop. \n
+        Invoerveld uitlezen en daarmee in de database kijken. 
+        Data van de database wordt gelezen en verwerkt. 
+        De geschiedenis wordt in de tabel weergeven en
+        de eventuele huidige parkeersessie wordt 
+        in de informatiepaneel weergeven. """
+        geschiedenis = [
+            ("KL-432-P", "Renault", "Clio", "Benzine", "2:40"),
+            ("HZ-619-R", "BMW", "218I Gran Tourer", "Diesel", "1:32"),
+        ]
+        self.setTable(geschiedenis)
+
+
+class VisorParkedCarsHistory(tkinterplus.Frame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.createButton("Bijwerken", self.updaten)
+        self.createLabel("Totaal")
+        self.createTable(("Kenteken", "Merk", "Model", "Brandstof", "Inrijden", "Uitrijden", "Tijd"))
+
+    def updaten(self):
+        """ Functie van de knop. \n
+        Invoerveld uitlezen en daarmee in de database kijken. 
+        Data van de database wordt gelezen en verwerkt. 
+        De geschiedenis wordt in de tabel weergeven en
+        de eventuele huidige parkeersessie wordt 
+        in de informatiepaneel weergeven. """
+        geschiedenis = [
+            ("KL-432-P", "Renault", "Clio", "Benzine", "12-5-2019 7:55", "12-5-2019 16:21", "8:26"),
+            ("HZ-619-R", "BMW", "218I Gran Tourer", "Diesel", "12-5-2019 12:32", "12-5-2019 15:12", "2:40"),
+        ]
+        self.setTable(geschiedenis)
+
+
+class VisorParkedCarsOverview(tkinterplus.Frame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.createButton("Bijwerken", self.updaten)
+        self.createEntryChoice("Filter op per: ", ["Uur", "Dag", "Week", "Maand", "Jaar"])
+        self.createTable(("Aantal", "Interval"))
+
+    def updaten(self):
+        """ Functie van de knop. \n
+        Invoerveld uitlezen en daarmee in de database kijken. 
+        Data van de database wordt gelezen en verwerkt. 
+        De geschiedenis wordt in de tabel weergeven en
+        de eventuele huidige parkeersessie wordt 
+        in de informatiepaneel weergeven. """
+        filterkeuze = self.getEntries()
+        print("Filter op %s" % filterkeuze)
+        geschiedenis = [
+            (2, "00:00"),
+            (2, "01:00"),
+            (2, "02:00"),
+            (2, "03:00"),
+            (2, "04:00"),
+            (2, "05:00"),
+            (7, "06:00"),
+            (31, "07:00"),
+            (63, "08:00"),
+            (97, "09:00"),
+            (114, "10:00"),
+            (132, "11:00"),
+            (141, "12:00"),
+            (113, "13:00"),
+            (96, "14:00"),
+            (85, "15:00"),
+            (38, "16:00"),
+            (16, "17:00"),
+            (12, "18:00"),
+            (4, "19:00"),
+            (4, "20:00"),
+            (3, "21:00"),
+            (1, "22:00"),
+            (0, "23:00"),
+            (0, "24:00"),
+        ]
+        self.setTable(geschiedenis)
+
+class VisorUsersInvoices(tkinterplus.Frame):
+    pass
+
+
+class VisorUnpaidInvoices(tkinterplus.Frame):
+    pass
+
+
+class VisorParkPrices(tkinterplus.Frame):
+    pass
+
+
+class UserCarStatus(tkinterplus.Frame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.createButton("Bijwerken", self.updaten)
+        self.createLabel("AutoStatus")
+        self.createTable(("Datum", "Transactie"))
+
+    def displayAutoStatus(self, text):
+        ''' Weergeeft de status van het parkeren in de informatiepaneel. '''
+        if text is not None:
+            text = "Uw huidige parkeertijd is %s uur." % text
+        else:
+            text = "De auto is niet geparkeerd."
+        self.labels["AutoStatus"].config(text=text)
+
+    def verwerkingAutoStatus(self, opdracht):
+        ''' TODO Verbinding maken met de database. '''
+        random = time.time() * 100 % 10
+        if random < 9:
+            if random < 1:
+                return datetime.time(hour=0, minute=int(60*random))
+            return datetime.time(hour=int(random), minute=int(6*random))
+        return None
+
+    def updaten(self):
+        """ Functie van de knop. \n
+        Invoerveld uitlezen en daarmee in de database kijken. 
+        Data van de database wordt gelezen en verwerkt. 
+        De geschiedenis wordt in de tabel weergeven en
+        de eventuele huidige parkeersessie wordt 
+        in de informatiepaneel weergeven. """
+        status = self.verwerkingAutoStatus(None)
+        geschiedenis = [
+            ("10-1-2018 10:12", "Inrijden"),
+            ("10-1-2018 16:43", "Uitrijden"),
+        ]
+        self.displayAutoStatus(status)
+        self.setTable(geschiedenis)
+
+
+class UserInvoices(tkinterplus.Frame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.createButton("Ophalen", self.updaten)
+        self.createLabel("Gebruiker")
+        self.createTable(("Inrijden", "Uitrijden", "Parkeertijd", "Tarief", "Prijs", "Korting"))
+
+    def displayGegevens(self, text):
+        ''' Weergeeft de status van het parkeren in de informatiepaneel. '''
+        if text is not None:
+            text = "Naam: %s" % text
+        else:
+            text = "De auto is niet geparkeerd."
+        self.labels["Gebruiker"].config(text=text)
+
+    def updaten(self):
+        ''' Gegevens uit de database ophalen. '''
+        geschiedenis = [
+            ("10-2-2019 15:10", "10-2-2019 19:15", "4:05", 0.50, 2.02, 50.00)
+        ]
+        self.displayGegevens("Gebruiker")
+        self.setTable(geschiedenis)
+
+
 def main():
-    app = Application()
+    app = tkinterplus.Application("P7@Zernike")
+    app.createOverlay(P7Zernike)
+    sup = tkinterplus.Window("P7@Supervisor")
+    sup.createOverlay(P7Super)
+    cam = tkinterplus.Window("P7@Entrance")
+    cam.createOverlay(P7Entrance)
     app.mainloop()
 
 
