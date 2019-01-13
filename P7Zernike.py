@@ -9,8 +9,7 @@ fueltype = settings.fueltype
 
 
 class P7Entrance(tkinterplus.Notebook):
-    def __init__(self, master):
-        super().__init__(master)
+    def initialisatie(self):
         self.createTab(ParkStatus, "Parkeerplaatsen")
         self.createTab(ParkCheckIn, "Ingang A")
         self.createTab(ParkCheckIn, "Ingang B")
@@ -19,31 +18,17 @@ class P7Entrance(tkinterplus.Notebook):
 
 
 class P7Zernike(tkinterplus.Notebook):
-    def __init__(self, master):
-        super().__init__(master)
-        user = "Gebruiker"
-        visor = "Beheerder"
+    def initialisatie(self):
         self.createTab(SignIn, "Aanmelden")
         self.createTab(SignUp, "Registreren")
-        self.createTab(UserCarStatus, "Status", user)
-        self.createTab(UserInvoices, "Betalen", user)
-        self.createTab(ParkStatus, "Parkeerplaatsen", user)
-        self.createTab(SignOut, "Afmelden", user)
-        self.createTab(ParkStatus, "Parkeerplaats", visor)
-        self.createTab(ParkCheckIn, "Inchecken", visor)
-        self.createTab(ParkCheckOut, "Uitchecken", visor)
-        self.createTab(VisorParkedCarsList, "Lijst parkeerplaats", visor)
-        self.createTab(VisorParkedCarsHistory, "Geschiedenis parkeerplaats", visor)
-        self.createTab(VisorParkedCarsOverview, "Overzicht parkeerplaats", visor)
-        self.createTab(VisorUsersInvoices, "Alle facturen", visor)
-        self.createTab(VisorUnpaidInvoices, "Onbetaalde facturen", visor)
-        self.createTab(VisorParkPrices, "Prijzen", visor)
-        self.createTab(SignOut, "Afmelden", visor)
 
+        self.createGroup("Gebruiker")
+        self.createTab(UserCarStatus, "Status")
+        self.createTab(UserInvoices, "Betalen")
+        self.createTab(ParkStatus, "Parkeerplaatsen")
+        self.createTab(SignOut, "Afmelden")
 
-class P7Super(tkinterplus.Notebook):
-    def __init__(self, master):
-        super().__init__(master)
+        self.createGroup("Beheerder")
         self.createTab(ParkStatus, "Parkeerplaats")
         self.createTab(ParkCheckIn, "Inchecken")
         self.createTab(ParkCheckOut, "Uitchecken")
@@ -53,36 +38,46 @@ class P7Super(tkinterplus.Notebook):
         self.createTab(VisorUsersInvoices, "Alle facturen")
         self.createTab(VisorUnpaidInvoices, "Onbetaalde facturen")
         self.createTab(VisorParkPrices, "Prijzen")
+        self.createTab(SignOut, "Afmelden")
 
 
+class P7Super(tkinterplus.Notebook):
+    def initialisatie(self):
+        self.createTab(ParkStatus, "Parkeerplaats")
+        self.createTab(ParkCheckIn, "Inchecken")
+        self.createTab(ParkCheckOut, "Uitchecken")
+        self.createTab(VisorParkedCarsList, "Lijst parkeerplaats")
+        self.createTab(VisorParkedCarsHistory, "Geschiedenis parkeerplaats")
+        self.createTab(VisorParkedCarsOverview, "Geschiedenis overzicht")
+        self.createTab(VisorUsersInvoices, "Alle facturen")
+        self.createTab(VisorUnpaidInvoices, "Onbetaalde facturen")
+        self.createTab(VisorParkPrices, "Prijzen")
 
 class ParkCheckOut(tkinterplus.Frame):
-    def __init__(self, master):
-        super().__init__(master)
+    def initialisatie(self):
         self.createButtonEntry("Kenteken", "Uitrijden", self.uitchecken)
 
     def uitchecken(self):
         ''' Invoerveld uitlezen. \n 
         Returns het kenteken. '''
         text = self.getButtonEntry()
-        self.after(100, print, "Kenteken uit de database ophalen...")
-        self.after(1600, print, "Kenteken gegevens afmelden...")
-        self.after(2000, print, "Slagboom openen...")
+        self.app.after(100, print, "Kenteken uit de database ophalen...")
+        self.app.after(1600, print, "Kenteken gegevens afmelden...")
+        self.app.after(2000, print, "Slagboom openen...")
         return text
 
 
 class ParkCheckIn(tkinterplus.Frame):
-    def __init__(self, master):
-        super().__init__(master)
+    def initialisatie(self):
         self.createButtonEntry("Kenteken", "Inrijden", self.inchecken)
 
     def inchecken(self):
         ''' Uitvoerveld uitlezen. \n 
         Returns het kenteken. '''
         text = self.getButtonEntry()
-        self.after(100, print, "Kenteken uit de database ophalen...")
-        self.after(1600, print, "Kenteken gegevens goedkeuren...")
-        self.after(2000, print, "Slagboom openen...")
+        self.app.after(100, print, "Kenteken uit de database ophalen...")
+        self.app.after(1600, print, "Kenteken gegevens goedkeuren...")
+        self.app.after(2000, print, "Slagboom openen...")
         return text
 
 
@@ -90,8 +85,7 @@ class SignOut(tkinterplus.Frame):
     def uitloggen(self):
         self.master.switchGroup(None)
 
-    def __init__(self, master):
-        super().__init__(master)
+    def initialisatie(self):
         self.createButton("Uitloggen", self.uitloggen)
 
 class SignIn(tkinterplus.Frame):
@@ -102,13 +96,11 @@ class SignIn(tkinterplus.Frame):
             return
         self.master.switchGroup("Gebruiker")
 
-    def __init__(self, master):
-        super().__init__(master)
+    def initialisatie(self):
         self.createButtonEntry("Kenteken", "Inloggen", self.inloggen)
 
 class SignUp(tkinterplus.Frame):
-    def __init__(self, master):
-        super().__init__(master)
+    def initialisatie(self):
         self.createEntry("Kenteken", "License")
         self.createEntry("Voornaam", "Firstname")
         self.createEntry("Tussenvoegsel", "Prefix")
@@ -120,8 +112,8 @@ class SignUp(tkinterplus.Frame):
         self.createEntryChoice("Automerk", brands, "Brand", "Volkswagen")
         self.createEntry("Automodel", "Model")
         self.createEntryChoice("Brandstof", fueltype, "Fuel", "Benzine")
-        self.createButton("Registreren", self.registreren)
         self.createLabel("Registratie")
+        self.createButton("Registreren", self.registreren)
         self.createEntryClear("Leegmaken")
 
     def displayRegistratie(self, code):
@@ -135,8 +127,7 @@ class SignUp(tkinterplus.Frame):
 
 
 class ParkStatus(tkinterplus.Frame):
-    def __init__(self, master):
-        super().__init__(master)
+    def initialisatie(self):
         self.createLabel("ParkeerStatus")
         self.createLabel("ParkeerAantal")
         self.createButton("Bijwerken", self.updaten)
@@ -148,8 +139,7 @@ class ParkStatus(tkinterplus.Frame):
 
 
 class VisorParkedCarsList(tkinterplus.Frame):
-    def __init__(self, master):
-        super().__init__(master)
+    def initialisatie(self):
         self.createButton("Bijwerken", self.updaten)
         self.createTable(("Kenteken", "Merk", "Model", "Brandstof", "Tijd"))
 
@@ -168,8 +158,7 @@ class VisorParkedCarsList(tkinterplus.Frame):
 
 
 class VisorParkedCarsHistory(tkinterplus.Frame):
-    def __init__(self, master):
-        super().__init__(master)
+    def initialisatie(self):
         self.createButton("Bijwerken", self.updaten)
         self.createLabel("Totaal")
         self.createTable(("Kenteken", "Merk", "Model", "Brandstof", "Inrijden", "Uitrijden", "Tijd"))
@@ -189,8 +178,7 @@ class VisorParkedCarsHistory(tkinterplus.Frame):
 
 
 class VisorParkedCarsOverview(tkinterplus.Frame):
-    def __init__(self, master):
-        super().__init__(master)
+    def initialisatie(self):
         self.createButton("Bijwerken", self.updaten)
         self.createEntryChoice("Filter op per: ", ["Uur", "Dag", "Week", "Maand", "Jaar"])
         self.createTable(("Aantal", "Interval"))
@@ -203,7 +191,7 @@ class VisorParkedCarsOverview(tkinterplus.Frame):
         de eventuele huidige parkeersessie wordt 
         in de informatiepaneel weergeven. """
         filterkeuze = self.getEntries()
-        print("Filter op %s" % filterkeuze)
+        print("Filter op %s" % filterkeuze[None])
         geschiedenis = [
             (2, "00:00"),
             (2, "01:00"),
@@ -234,20 +222,62 @@ class VisorParkedCarsOverview(tkinterplus.Frame):
         self.setTable(geschiedenis)
 
 class VisorUsersInvoices(tkinterplus.Frame):
-    pass
+    def initialisatie(self):
+        self.createButton("Bijwerken", self.updaten)
+        self.createTable(("Naam", "Datum", "Kenteken", "Prijs", "Korting", "Betaald"))
 
+    def updaten(self):
+        ''' Gegevens uit de database ophalen. '''
+        facturen = [
+            ("Pietje Pluk", "10-2-2019", "XX-213-P", 50.50, 50, "Ja")
+        ]
+        self.setTable(facturen)
 
 class VisorUnpaidInvoices(tkinterplus.Frame):
-    pass
+    def initialisatie(self):
+        self.createButton("Bijwerken", self.updaten)
+        self.createTable(("Naam", "Datum", "Kenteken", "Prijs", "Korting"))
+
+    def updaten(self):
+        ''' Gegevens uit de database ophalen. '''
+        facturen = [
+            ("Jan Bever", "24-2-2019", "MR-213-T", 12.50, 0)
+        ]
+        self.setTable(facturen)
 
 
 class VisorParkPrices(tkinterplus.Frame):
-    pass
+    def initialisatie(self):
+        self.createButton("Bijwerken", self.updaten)
+        self.createEntry("Prijs", "Price")
+        self.createEntry("Korting", "Discount")
+        self.createButton("Wijzigen", self.prijs)
+        self.createLabel("Prijzen")
+        self.createEntryClear("Leegmaken")
+
+    def prijs(self):
+        pass
+
+    def updaten(self):
+        pass
+
+class VisorUserDiscount(tkinterplus.Frame):
+    def initialisatie(self):
+        self.createButton("Bijwerken", self.updaten)
+        self.createEntry("Student-/personeelcode", "Code")
+        self.createEntry("Korting", "iDiscount")
+        self.createButton("Wijzigen", self.korting)
+        self.createEntryClear("Leegmaken")
+
+    def korting(self):
+        pass
+
+    def updaten(self):
+        pass
 
 
 class UserCarStatus(tkinterplus.Frame):
-    def __init__(self, master):
-        super().__init__(master)
+    def initialisatie(self):
         self.createButton("Bijwerken", self.updaten)
         self.createLabel("AutoStatus")
         self.createTable(("Datum", "Transactie"))
@@ -286,8 +316,7 @@ class UserCarStatus(tkinterplus.Frame):
 
 
 class UserInvoices(tkinterplus.Frame):
-    def __init__(self, master):
-        super().__init__(master)
+    def initialisatie(self):
         self.createButton("Ophalen", self.updaten)
         self.createLabel("Gebruiker")
         self.createTable(("Inrijden", "Uitrijden", "Parkeertijd", "Tarief", "Prijs", "Korting"))
